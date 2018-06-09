@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>画布工具</title>
+    <link rel="stylesheet" type="text/css" href="cs.css" />
+</head>
+<body>
+<canvas width="500" height="500" id="canvas">
+    <span>亲，您的浏览器不支持canvas，换个浏览器试试吧！</span>
+</canvas>
+<div>
+    <input type="button" value="红画笔" id="red">
+    <input type="button" value="绿画笔" id="green">
+    <input type="button" value="蓝画笔" id="blue">
+    <input type="button" value="重置颜色" id="default">
+    <input type="button" value="清除画布" id="clear">
+</div>
+<script>
+    //omload方法，文档加载完后再执行函数
+    window.onload = function(){
+        var canvas = document.getElementById("canvas");
+        //对象导出一个二维绘图 API
+        var ctx = canvas.getContext("2d");
+        //取出一个input对象数组
+        var oInput = document.getElementsByTagName("input");
+//遍历循环时间监听函数
+        for(var i=0;i<oInput.length;i++){
+            oInput[i].onclick = function(){
+                var ID = this.getAttribute('id');
+                switch(ID){
+                    case 'red':
+                        ctx.strokeStyle = 'red';
+                        break;
+                    case 'green':
+                        ctx.strokeStyle = 'green';
+                        break;
+                    case 'blue':
+                        ctx.strokeStyle = 'blue';
+                        break;
+                    case 'default':
+                        ctx.strokeStyle = 'black';
+                        break;
+                    case 'clear':
+                        ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
+                        break;
+                }
+            }
+        }
+        draw();
+        //主要函数
+        function draw(){
+            //鼠标被按下时执行的函数
+            canvas.onmousedown = function(ev){
+                //浏览器兼容设置
+                var ev = ev || event;
+                //开始绘制
+                ctx.beginPath();
+
+                ctx.moveTo(ev.clientX-canvas.offsetLeft,ev.clientY-canvas.offsetTop);
+                this.onmousemove = function(ev){
+                    var ev = ev || event;
+                    ctx.lineTo(ev.clientX - canvas.offsetLeft,ev.clientY - canvas.offsetTop);
+                    ctx.stroke();
+                }
+                this.onmouseup = function(ev){
+                    this.onmousemove = this.onmouseup = null;
+                    ctx.closePath();
+                }
+
+            }
+        }
+
+
+
+    }
+</script>
+</body>
+</html>
